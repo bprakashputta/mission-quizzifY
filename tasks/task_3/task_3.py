@@ -72,7 +72,9 @@ class DocumentProcessor:
 
                 # Step 3: Then, Add the extracted pages to the 'pages' list.
                 #####################################
-                self.pages.append(extracted_pages)
+                for page in extracted_pages:
+                    print(page)
+                    self.pages.append(page)
                 
                 # Clean up by deleting the temporary file.
                 os.unlink(temp_file_path)
