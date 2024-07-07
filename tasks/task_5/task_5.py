@@ -79,8 +79,7 @@ class ChromaCollectionCreator:
         # https://docs.trychroma.com/
         # Create a Chroma in-memory client using the text chunks and the embeddings model
         # [Your code here for creating Chroma collection]
-        client = chromadb.EphemeralClient()
-        self.db = Chroma.from_documents(texts, self.embed_model, client=client, collection_name="mission_quizzifY")
+        self.db = Chroma.from_documents(texts, self.embed_model)
 
 
         if self.db:
