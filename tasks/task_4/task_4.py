@@ -3,7 +3,7 @@
 from langchain_google_vertexai import VertexAIEmbeddings
 import os
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "authentication.json"
+
 
 class EmbeddingClient:
     """

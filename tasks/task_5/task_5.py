@@ -13,7 +13,6 @@ from langchain_community.vectorstores import Chroma
 
 import chromadb
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "../../authentication.json"
 
 class ChromaCollectionCreator:
     def __init__(self, processor, embed_model):

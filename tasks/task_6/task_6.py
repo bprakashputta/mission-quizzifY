@@ -6,7 +6,6 @@ from tasks.task_3.task_3 import DocumentProcessor
 from tasks.task_4.task_4 import EmbeddingClient
 from tasks.task_5.task_5 import ChromaCollectionCreator
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "../../authentication.json"
 
 f"""
 Task: Build a Quiz Builder with Streamlit and LangChain
