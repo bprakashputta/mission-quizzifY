@@ -13,7 +13,7 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR-PROJECT-ID-HERE",
+        "project": "gemini-quizzify-427417",
         "location": "us-central1"
     }
     
@@ -22,6 +22,7 @@ if __name__ == "__main__":
         
         ##### YOUR CODE HERE #####
         # Step 1: init the question bank list in st.session_state
+        st.session_state["question_bank"] = []
         ##### YOUR CODE HERE #####
     
         screen = st.empty()
@@ -41,6 +42,8 @@ if __name__ == "__main__":
                 
                 ##### YOUR CODE HERE #####
                 # Step 2: Set topic input and number of questions
+                topic_input = st.text_input("Topic for Generative Quiz", placeholder="Enter the topic for the quiz")
+                questions = st.slider("Number of Questions", min_value=1, max_value=10, value=3)
                 ##### YOUR CODE HERE #####
                     
                 submitted = st.form_submit_button("Submit")
@@ -52,11 +55,14 @@ if __name__ == "__main__":
                         st.write(f"Generating {questions} questions for topic: {topic_input}")
                     
                     ##### YOUR CODE HERE #####
-                    generator = # Step 3: Initialize a QuizGenerator class using the topic, number of questrions, and the chroma collection
+                    generator = QuizGenerator(topic_input, questions, chroma_creator) # Step 3: Initialize a QuizGenerator class using the topic, number of questrions, and the chroma collection
                     question_bank = generator.generate_quiz()
                     # Step 4: Initialize the question bank list in st.session_state
+                    st.session_state["question_bank"] = question_bank
                     # Step 5: Set a display_quiz flag in st.session_state to True
+                    st.session_state["display_quiz"] = True
                     # Step 6: Set the question_index to 0 in st.session_state
+                    st.session_state["question_index"] = 0
                     ##### YOUR CODE HERE #####
 
     elif st.session_state["display_quiz"]:
@@ -64,12 +70,13 @@ if __name__ == "__main__":
         st.empty()
         with st.container():
             st.header("Generated Quiz Question: ")
-            quiz_manager = QuizManager(question_bank)
+            quiz_manager = QuizManager(st.session_state["question_bank"])
             
             # Format the question and display it
             with st.form("MCQ"):
                 ##### YOUR CODE HERE #####
                 # Step 7: Set index_question using the Quiz Manager method get_question_at_index passing the st.session_state["question_index"]
+                index_question = quiz_manager.get_question_at_index(st.session_state["question_index"])
                 ##### YOUR CODE HERE #####
                 
                 # Unpack choices for radio button
@@ -93,8 +100,19 @@ if __name__ == "__main__":
                 # Step 8: Use the example below to navigate to the next and previous questions
                 # Here we use the next_question_index method from our quiz_manager class
                 # st.form_submit_button("Next Question, on_click=lambda: quiz_manager.next_question_index(direction=1)")
+
+                next_question = st.form_submit_button("Next")
+                if(next_question):
+                    quiz_manager.next_question_index(1)
+
+                previous_question = st.form_submit_button("Previous")
+                if(previous_question):
+                    quiz_manager.next_question_index(-1)
                 ##### YOUR CODE HERE #####
                 
+                print("Answer Choice : ",answer_choice)
+                print("Answer : ",answer)
+
                 if answer_choice and answer is not None:
                     correct_answer_key = index_question['answer']
                     if answer.startswith(correct_answer_key):
