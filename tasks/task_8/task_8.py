@@ -86,7 +86,7 @@ class QuizGenerator:
         from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 
         # Enable a Retriever
-        retriever = self.vectorstore.as_retriever()
+        retriever = self.vectorstore.db.as_retriever()
         
         # Use the system template to create a PromptTemplate
         prompt = PromptTemplate.from_template(self.system_template)
@@ -125,11 +125,12 @@ class QuizGenerator:
 
         for _ in range(self.num_questions):
             ##### YOUR CODE HERE #####
-            question_str = # Use class method to generate question
+            question_str = self.generate_question_with_vectorstore() # Use class method to generate question
             
             ##### YOUR CODE HERE #####
             try:
                 # Convert the JSON String to a dictionary
+                question = json.loads(question_str)
             except json.JSONDecodeError:
                 print("Failed to decode question JSON.")
                 continue  # Skip this iteration if JSON decoding fails
@@ -140,6 +141,7 @@ class QuizGenerator:
             if self.validate_question(question):
                 print("Successfully generated unique question")
                 # Add the valid and unique question to the bank
+                self.question_bank.append(question)
             else:
                 print("Duplicate or invalid question detected.")
             ##### YOUR CODE HERE #####
@@ -169,6 +171,11 @@ class QuizGenerator:
         ##### YOUR CODE HERE #####
         # Consider missing 'question' key as invalid in the dict object
         # Check if a question with the same text already exists in the self.question_bank
+        is_unique = True
+        for ques in self.question_bank:
+            if question["question"] == ques["question"]:
+                is_unique = False
+            
         ##### YOUR CODE HERE #####
         return is_unique
 
@@ -178,7 +185,7 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR-PROJECT-ID-HERE",
+        "project": "gemini-quizzify-427417",
         "location": "us-central1"
     }
     
@@ -211,7 +218,8 @@ if __name__ == "__main__":
                 # Test the Quiz Generator
                 generator = QuizGenerator(topic_input, questions, chroma_creator)
                 question_bank = generator.generate_quiz()
-                question = question_bank[0]
+                st.write("Number of Questions Generated :",len(question_bank))
+                # question = question_bank[0]
 
     if question_bank:
         screen.empty()
